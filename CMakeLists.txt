@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(Opus C)
+project(opus)
 
 option(FIXED_POINT "Use fixed-point code (for device with less powerful FPU" NO)
 option(USE_ALLOCA "Use alloca for stack arrays (on non-C99 compilers)" NO)
@@ -68,23 +68,18 @@ set(OPUS_SOURCES src/opus.c src/opus_decoder.c src/opus_encoder.c src/opus_multi
     src/analysis.c src/mlp.c src/mlp_data.c)
 
 add_definitions(-DOPUS_VERSION="\\"1.2.0\\"")
-
 # It is strongly recommended to uncomment one of these
 # VAR_ARRAYS: Use C99 variable-length arrays for stack allocation
 # USE_ALLOCA: Use alloca() for stack allocation
 # If none is defined, then the fallback is a non-threadsafe global array
-if (USE_ALLOCA)
-    add_definitions(-DUSE_ALLOCA)
-else (USE_ALLOCA)
-    add_definitions(-DVAR_ARRAYS)
-endif (USE_ALLOCA)
+add_definitions(-DUSE_ALLOCA)
+
 
 # These options affect performance
 # HAVE_LRINTF: Use C99 intrinsics to speed up float-to-int conversion
 add_definitions(-DHAVE_LRINTF)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -W -Wstrict-prototypes -Wextra -Wcast-align")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wnested-externs -Wshadow")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 
 add_definitions(-DOPUS_BUILD)
 
@@ -95,6 +90,4 @@ endif (FIXED_POINT)
 include_directories(include silk silk/float silk/fixed celt src)
 
 add_library(opus STATIC ${CELT_SOURCES} ${SILK_SOURCES} ${OPUS_SOURCES})
-
 add_subdirectory(tests)
-
